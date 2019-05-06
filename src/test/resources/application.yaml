@@ -7,5 +7,5 @@ crowd:
     session:
       validationinterval: 0
   roles:
-    crowd-app-dev-admin: admin
-    crowd-app-dev-user: user
+    crowd-app-dev-admin: ROLE_admin
+    crowd-app-dev-user: ROLE_user
