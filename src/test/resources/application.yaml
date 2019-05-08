@@ -1,11 +1,9 @@
 crowd:
-  property:
+  properties:
     crowd.server.url: https://your-crowd
     application:
       name: app-dev
       password: password
-    session:
-      validationinterval: 0
   roles:
     crowd-app-dev-admin: ROLE_admin
     crowd-app-dev-user: ROLE_user
