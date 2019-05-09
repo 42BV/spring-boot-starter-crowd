@@ -1,9 +1,7 @@
 crowd:
-  properties:
-    crowd.server.url: https://your-crowd
-    application:
-      name: app-dev
-      password: password
+  server: https://your-crowd
+  application: app-dev
+  password: password
   roles:
     crowd-app-dev-admin: ROLE_admin
     crowd-app-dev-user: ROLE_user

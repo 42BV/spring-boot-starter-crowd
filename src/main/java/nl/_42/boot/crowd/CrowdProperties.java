@@ -11,13 +11,33 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 
-@Getter
 @Setter
 @ConfigurationProperties("crowd")
 public class CrowdProperties {
 
+  private static final String SERVER_PROPERTY      = "crowd.server.url";
+  private static final String APPLICATION_PROPERTY = "application.name";
+  private static final String PASSWORD_PROPERTY    = "application.password";
+
+  private String server;
+  private String application;
+  private String password;
+
   private Properties properties = new Properties();
   private Properties roles = new Properties();
+
+  /**
+   * Retrieve the CROWD properties.
+   * @return the properties
+   */
+  public Properties getProperties() {
+    Properties properties = new Properties();
+    properties.put(SERVER_PROPERTY, server);
+    properties.put(APPLICATION_PROPERTY, application);
+    properties.put(PASSWORD_PROPERTY, password);
+    this.properties.forEach(properties::put);
+    return properties;
+  }
 
   /**
    * Convert the group to authority properties into a set of map entries to please the Atlassian API.
