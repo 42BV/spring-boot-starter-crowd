@@ -4,6 +4,7 @@ import com.atlassian.crowd.integration.http.CrowdHttpAuthenticator;
 import com.atlassian.crowd.integration.http.CrowdHttpAuthenticatorImpl;
 import com.atlassian.crowd.integration.http.util.CrowdHttpTokenHelper;
 import com.atlassian.crowd.integration.http.util.CrowdHttpTokenHelperImpl;
+import com.atlassian.crowd.integration.http.util.CrowdHttpValidationFactorExtractor;
 import com.atlassian.crowd.integration.http.util.CrowdHttpValidationFactorExtractorImpl;
 import com.atlassian.crowd.integration.rest.service.factory.RestCrowdClientFactory;
 import com.atlassian.crowd.integration.springsecurity.RemoteCrowdAuthenticationProvider;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -38,9 +40,8 @@ public class CrowdAutoConfiguration {
 
     @Bean
     public ClientProperties clientProperties() {
-        return ClientPropertiesImpl.newInstanceFromProperties(
-            properties.getProperties()
-        );
+        Properties properties = this.properties.getProperties();
+        return ClientPropertiesImpl.newInstanceFromProperties(properties);
     }
 
     @Bean
@@ -49,23 +50,23 @@ public class CrowdAutoConfiguration {
     }
 
     @Bean
-    public RemoteCrowdAuthenticationProvider crowdAuthenticationProvider(CrowdClient client, CrowdHttpAuthenticator authenticator, CrowdUserDetailsService userDetailsService) {
+    public RemoteCrowdAuthenticationProvider crowdAuthenticationProvider(CrowdClient client, CrowdHttpAuthenticator authenticator,
+            CrowdUserDetailsService userDetailsService) {
         return new RemoteCrowdAuthenticationProvider(client, authenticator, userDetailsService);
     }
 
     @Bean
     public CrowdHttpAuthenticator crowdHttpAuthenticator(CrowdClient client, ClientProperties properties) {
         return new CrowdHttpAuthenticatorImpl(
-            client,
-            properties,
-            crowdTokenHelper()
+                client,
+                properties,
+                crowdTokenHelper()
         );
     }
 
     private CrowdHttpTokenHelper crowdTokenHelper() {
-        return CrowdHttpTokenHelperImpl.getInstance(
-            CrowdHttpValidationFactorExtractorImpl.getInstance()
-        );
+        CrowdHttpValidationFactorExtractor extractor = CrowdHttpValidationFactorExtractorImpl.getInstance();
+        return CrowdHttpTokenHelperImpl.getInstance(extractor);
     }
 
     @Bean
