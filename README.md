@@ -4,7 +4,17 @@ Library for integrating CROWD authentication with Spring Boot / Security.
 
 ## Usage
 
-Include the dependency in your Spring Boot application and configure:
+Include the dependency in your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>nl.42</groupId>
+    <artifactId>spring-boot-starter-crowd</artifactId>
+    <version>${starter-crowd.version}</version>
+</dependency>
+```
+ 
+And provide the required configuration:
 
 ```yaml
 crowd:
@@ -14,7 +24,10 @@ crowd:
   password: password
 ```
 
-This will automatically register a REST based remote CROWD Authentication Provider.
+During startup this will register a remote CROWD `AuthenticationProvider`.
+The provider still has to be included in the `AuthenticationManager`.
+
+## Configuration
 
 ### Properties
 
