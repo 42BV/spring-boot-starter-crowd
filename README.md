@@ -23,15 +23,12 @@ Properties that would previously have gone in `crowd.properties` can now be defi
 ```yaml
 crowd:
   properties:
-    crowd.server.url: https://your-crowd
-    application:
-      name: app-dev
-      password: password
+    timeout: 200
 ```
 
-### Group to authority mapping
+### Groups
 
-Granted CROWD group names can be mapped to authentications using a `crowd.roles` prefix:
+CROWD group names can be mapped to authentications using `crowd.roles`:
 
 ```yaml
 crowd:

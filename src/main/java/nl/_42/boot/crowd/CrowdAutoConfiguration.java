@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnResource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import java.util.Map;
 import java.util.Properties;
@@ -50,18 +51,15 @@ public class CrowdAutoConfiguration {
     }
 
     @Bean
-    public RemoteCrowdAuthenticationProvider crowdAuthenticationProvider(CrowdClient client, CrowdHttpAuthenticator authenticator,
-            CrowdUserDetailsService userDetailsService) {
-        return new RemoteCrowdAuthenticationProvider(client, authenticator, userDetailsService);
+    public RemoteCrowdAuthenticationProvider crowdAuthenticationProvider(CrowdClient client,
+                                                                         CrowdHttpAuthenticator authenticator,
+                                                                         CrowdUserDetailsService userDetailsService) {
+        return new HttpCrowdAuthenticationProvider(client, authenticator, userDetailsService);
     }
 
     @Bean
     public CrowdHttpAuthenticator crowdHttpAuthenticator(CrowdClient client, ClientProperties properties) {
-        return new CrowdHttpAuthenticatorImpl(
-                client,
-                properties,
-                crowdTokenHelper()
-        );
+        return new CrowdHttpAuthenticatorImpl(client, properties, crowdTokenHelper());
     }
 
     private CrowdHttpTokenHelper crowdTokenHelper() {
@@ -73,11 +71,11 @@ public class CrowdAutoConfiguration {
     public CrowdUserDetailsService crowdUserDetailsService(CrowdClient client) {
         CrowdUserDetailsServiceImpl userDetailsService = new CrowdUserDetailsServiceImpl();
         userDetailsService.setCrowdClient(client);
-        setGroupToAuthorityMappings(userDetailsService);
+        setGroupMapping(userDetailsService);
         return userDetailsService;
     }
 
-    private void setGroupToAuthorityMappings(CrowdUserDetailsServiceImpl userDetailsService) {
+    private void setGroupMapping(CrowdUserDetailsServiceImpl userDetailsService) {
         Set<Map.Entry<String, String>> mappings = properties.getGroupToAuthorityMappings();
 
         if (!mappings.isEmpty()) {
@@ -87,6 +85,21 @@ public class CrowdAutoConfiguration {
         } else {
             log.warn("No 'crowd.roles' found in spring boot application properties, no conversion of Crowd Groups will be applied!");
         }
+    }
+
+    private static class HttpCrowdAuthenticationProvider extends RemoteCrowdAuthenticationProvider {
+
+        public HttpCrowdAuthenticationProvider(CrowdClient authenticationManager,
+                                               CrowdHttpAuthenticator httpAuthenticator,
+                                               CrowdUserDetailsService userDetailsService) {
+            super(authenticationManager, httpAuthenticator, userDetailsService);
+        }
+
+        @Override
+        public boolean supports(AbstractAuthenticationToken token) {
+            return true; // Details can be filled with anything
+        }
+
     }
 
 }
