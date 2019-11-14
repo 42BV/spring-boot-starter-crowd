@@ -47,7 +47,7 @@
 
         <!-- Dependencies -->
         <spring.boot.version>2.1.4.RELEASE</spring.boot.version>
-        <spring.security.crowd.version>3.4.3</spring.security.crowd.version>
+        <spring.security.crowd.version>3.7.0</spring.security.crowd.version>
     </properties>
 
     <dependencyManagement>
