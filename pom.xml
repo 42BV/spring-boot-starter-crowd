@@ -11,7 +11,7 @@
 
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-starter-crowd</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Spring Boot Starter CROWD</name>
@@ -47,7 +47,7 @@
 
         <!-- Dependencies -->
         <spring.boot.version>2.1.4.RELEASE</spring.boot.version>
-        <spring.security.crowd.version>3.4.3</spring.security.crowd.version>
+        <spring.security.crowd.version>3.7.0</spring.security.crowd.version>
     </properties>
 
     <dependencyManagement>
