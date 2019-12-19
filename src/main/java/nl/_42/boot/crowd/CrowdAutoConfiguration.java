@@ -21,6 +21,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 
 import java.util.Map;
 import java.util.Properties;
@@ -89,6 +91,8 @@ public class CrowdAutoConfiguration {
 
     private static class HttpCrowdAuthenticationProvider extends RemoteCrowdAuthenticationProvider {
 
+        private CrowdSuccessHandler successHandler;
+
         public HttpCrowdAuthenticationProvider(CrowdClient authenticationManager,
                                                CrowdHttpAuthenticator httpAuthenticator,
                                                CrowdUserDetailsService userDetailsService) {
@@ -96,8 +100,22 @@ public class CrowdAutoConfiguration {
         }
 
         @Override
+        public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+            Authentication result = super.authenticate(authentication);
+            if (successHandler != null && result.isAuthenticated()) {
+                result = successHandler.onAuthenticated(authentication);
+            }
+            return result;
+        }
+
+        @Override
         public boolean supports(AbstractAuthenticationToken token) {
             return true; // Details can be filled with anything
+        }
+
+        @Autowired(required = false)
+        public void setSuccessHandler(CrowdSuccessHandler successHandler) {
+            this.successHandler = successHandler;
         }
 
     }
