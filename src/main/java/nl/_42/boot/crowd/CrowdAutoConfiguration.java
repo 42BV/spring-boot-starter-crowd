@@ -100,10 +100,10 @@ public class CrowdAutoConfiguration {
         }
 
         @Override
-        public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
             Authentication result = super.authenticate(authentication);
             if (successHandler != null && result.isAuthenticated()) {
-                result = successHandler.onAuthenticated(authentication);
+                result = successHandler.onAuthenticated(result);
             }
             return result;
         }
