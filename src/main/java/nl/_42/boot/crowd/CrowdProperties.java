@@ -1,71 +1,69 @@
 package nl._42.boot.crowd;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Map;
+import javax.annotation.PostConstruct;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toMap;
 
 @Setter
 @ConfigurationProperties("crowd")
 public class CrowdProperties {
 
-    static final String SERVER_PROPERTY = "crowd.server.url";
+    private static final String REST_PATH = "/rest/usermanagement/1";
+
     static final String APPLICATION_PROPERTY = "application.name";
     static final String PASSWORD_PROPERTY = "application.password";
+    static final String SERVER_PROPERTY = "server.url";
 
-    private String server = "";
     private String application = "";
     private String password = "";
+    private String server = "";
 
-    private Properties properties = new Properties();
+    @Getter
     private Properties roles = new Properties();
 
-    /**
-     * Retrieve the CROWD properties.
-     * @return the properties
-     */
-    public Properties getProperties() {
-        Properties properties = new Properties();
-        properties.put(SERVER_PROPERTY, server);
-        properties.put(APPLICATION_PROPERTY, application);
-        properties.put(PASSWORD_PROPERTY, password);
-        this.properties.forEach(properties::put);
-
-        verifyProperties(properties);
-
-        return properties;
+    @PostConstruct
+    public void validate() {
+        validateProperty(SERVER_PROPERTY, server);
+        validateProperty(APPLICATION_PROPERTY, application);
+        validateProperty(PASSWORD_PROPERTY, password);
     }
 
-    private void verifyProperties(Properties properties) {
-        verifyProperty(properties, SERVER_PROPERTY);
-        verifyProperty(properties, APPLICATION_PROPERTY);
-        verifyProperty(properties, PASSWORD_PROPERTY);
-    }
-
-    private void verifyProperty(Properties properties, String name) {
-        String value = properties.getProperty(name);
-        if (StringUtils.isEmpty(value)) {
+    private void validateProperty(String name, String value) {
+        if (value.trim().isEmpty()) {
             throw new IllegalStateException(
-                format("Missing required property 'crowd.properties.%s' either specify " +
-                       "this property or disable CROWD using 'crowd.enabled=false'", name)
+                format("Missing required property 'crowd.%s' either specify this property or disable CROWD using 'crowd.enabled=false'", name)
             );
         }
     }
 
-    /**
-     * Convert the group to authority properties into a set of map entries to please the Atlassian API.
-     * @return the set of map entries, each representing a group to authority mapping
-     */
-    public Set<Map.Entry<String, String>> getGroupToAuthorityMappings() {
-        Stream<Map.Entry<Object, Object>> entries = roles.entrySet().stream();
-        return entries.collect(toMap(e -> e.getKey().toString(), e -> e.getValue().toString())).entrySet();
+    public String getUrl(String path) {
+        return server + REST_PATH + path;
+    }
+
+    public void setAuthentication(HttpHeaders headers) {
+        headers.setBasicAuth(application, password);
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities(Set<String> groups) {
+        Collection<SimpleGrantedAuthority> authorities = new HashSet<>();
+        for (String group : groups) {
+            String role = roles.getProperty(group, "");
+            if (!role.isEmpty()) {
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+        }
+        return authorities;
     }
 
 }

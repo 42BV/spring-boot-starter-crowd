@@ -11,7 +11,7 @@
 
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-starter-crowd</artifactId>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Spring Boot Starter CROWD</name>
@@ -46,8 +46,8 @@
         <jdk.version>1.8</jdk.version>
 
         <!-- Dependencies -->
-        <spring.boot.version>2.2.4.RELEASE</spring.boot.version>
-        <spring.security.crowd.version>3.7.1</spring.security.crowd.version>
+        <spring.boot.version>2.4.5</spring.boot.version>
+        <jaxb.version>2.3.0</jaxb.version>
     </properties>
 
     <dependencyManagement>
@@ -75,9 +75,23 @@
         </dependency>
 
         <dependency>
-            <groupId>com.atlassian.crowd</groupId>
-            <artifactId>crowd-integration-springsecurity</artifactId>
-            <version>${spring.security.crowd.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb.version}</version>
         </dependency>
 
         <dependency>
@@ -118,6 +132,24 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>5.3.0</version>
+                <configuration>
+                    <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+                    <skipProvidedScope>true</skipProvidedScope>
+                    <skipTestScope>true</skipTestScope>
+                    <skipRuntimeScope>true</skipRuntimeScope>
+                    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+                    <suppressionFile>owasp-suppressions.xml</suppressionFile>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
