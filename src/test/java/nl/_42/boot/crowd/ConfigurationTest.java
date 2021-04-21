@@ -2,20 +2,21 @@ package nl._42.boot.crowd;
 
 import com.atlassian.crowd.integration.springsecurity.RemoteCrowdAuthenticationProvider;
 import com.atlassian.crowd.integration.springsecurity.user.CrowdUserDetailsServiceImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class ConfigurationTest {
 
@@ -27,13 +28,13 @@ public class ConfigurationTest {
 
     @Test
     public void loads() {
-        assertNotNull(crowdAuthenticationProvider);
+        Assertions.assertNotNull(crowdAuthenticationProvider);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void login() {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("user", "password");
-        crowdAuthenticationProvider.authenticate(token);
+        assertThrows(RuntimeException.class, () -> crowdAuthenticationProvider.authenticate(token));
     }
 
     @Test

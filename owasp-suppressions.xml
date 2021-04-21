@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2019. 42 bv (www.42.nl). All rights reserved.
+  -->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.2.xsd">
+    <suppress>
+        <notes>Spring Security RSA is being matched against a Spring Security OAuth issue.</notes>
+        <filePath regex="true">.*\bspring-security-rsa-1\.0\.9\.RELEASE\.jar</filePath>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes>This is all about lower versions of the springframework.</notes>
+        <filePath regex="true">.*\bspring-security-.*-5\.4\.6\.jar</filePath>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+</suppressions>
