@@ -89,7 +89,7 @@ public class CrowdClient {
 
     private HttpEntity<String> build(String body) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_XML);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
         crowdProperties.setAuthentication(headers);
 
