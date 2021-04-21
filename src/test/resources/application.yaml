@@ -3,5 +3,6 @@ crowd:
   application: app-dev
   password: password
   roles:
+    42-devs: ROLE_admin
     crowd-app-dev-admin: ROLE_admin
     crowd-app-dev-user: ROLE_user

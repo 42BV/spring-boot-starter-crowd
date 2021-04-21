@@ -1,17 +1,16 @@
 package nl._42.boot.crowd;
 
-import com.atlassian.crowd.integration.springsecurity.RemoteCrowdAuthenticationProvider;
-import com.atlassian.crowd.integration.springsecurity.user.CrowdUserDetailsServiceImpl;
+import nl._42.boot.crowd.rest.CrowdAuthenticationProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ConfigurationTest {
 
     @Autowired
-    private RemoteCrowdAuthenticationProvider crowdAuthenticationProvider;
+    private CrowdAuthenticationProvider crowdAuthenticationProvider;
 
     @Autowired
-    private CrowdUserDetailsServiceImpl crowdUserDetailsService;
+    private CrowdProperties crowdProperties;
 
     @Test
     public void loads() {
@@ -33,20 +32,18 @@ public class ConfigurationTest {
 
     @Test
     public void login() {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("user", "password");
-        assertThrows(RuntimeException.class, () -> crowdAuthenticationProvider.authenticate(token));
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("jeroen", "password");
+        assertThrows(AuthenticationServiceException.class, () -> crowdAuthenticationProvider.authenticate(token));
     }
 
     @Test
     public void mapping() {
-        Iterable<Map.Entry<String, String>> iterable = crowdUserDetailsService.getGroupToAuthorityMappings();
+        Properties roles = crowdProperties.getRoles();
 
-        Map<String, String> mappings = new HashMap<>();
-        iterable.forEach(entry -> mappings.put(entry.getKey(), entry.getValue()));
-
-        assertEquals(2, mappings.size());
-        assertEquals("ROLE_admin", mappings.get("crowd-app-dev-admin"));
-        assertEquals("ROLE_user", mappings.get("crowd-app-dev-user"));
+        assertEquals(3, roles.size());
+        assertEquals("ROLE_admin", roles.getProperty("42-devs"));
+        assertEquals("ROLE_admin", roles.getProperty("crowd-app-dev-admin"));
+        assertEquals("ROLE_user", roles.getProperty("crowd-app-dev-user"));
     }
 
 }
