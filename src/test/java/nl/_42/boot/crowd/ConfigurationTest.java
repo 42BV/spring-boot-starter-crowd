@@ -3,20 +3,17 @@ package nl._42.boot.crowd;
 import nl._42.boot.crowd.rest.CrowdAuthenticationProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 public class ConfigurationTest {
 
     @Autowired
