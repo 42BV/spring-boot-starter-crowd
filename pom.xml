@@ -11,7 +11,7 @@
 
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-starter-crowd</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <name>Spring Boot Starter CROWD</name>
@@ -38,7 +38,7 @@
         <connection>scm:git:git@github.com:42BV/spring-boot-starter-crowd.git</connection>
         <developerConnection>scm:git:git@github.com:42BV/spring-boot-starter-crowd.git</developerConnection>
         <url>https://github.com/42BV/spring-boot-starter-crowd</url>
-        <tag>HEAD</tag>
+        <tag>3.0.0</tag>
     </scm>
 
     <properties>
