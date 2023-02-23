@@ -16,13 +16,13 @@
 
     <name>Spring Boot Starter CROWD</name>
     <description>Spring Boot Security integration for CROWD.</description>
-    <url>http://www.42.nl</url>
+    <url>https://www.42.nl</url>
     <inceptionYear>2019</inceptionYear>
 
     <licenses>
         <license>
             <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -35,8 +35,8 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/42BV/spring-boot-starter-crowd.git</connection>
-        <developerConnection>scm:git:https://github.com/42BV/spring-boot-starter-crowd.git</developerConnection>
+        <connection>scm:git:scm:git:git@github.com:42BV/spring-boot-starter-crowd.git</connection>
+        <developerConnection>scm:git:scm:git:git@github.com:42BV/spring-boot-starter-crowd.git</developerConnection>
         <url>https://github.com/42BV/spring-boot-starter-crowd</url>
         <tag>HEAD</tag>
     </scm>
