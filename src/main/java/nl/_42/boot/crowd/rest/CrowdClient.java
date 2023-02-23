@@ -8,16 +8,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,18 +21,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CrowdClient {
 
-    private final CrowdProperties crowdProperties;
+    private final CrowdProperties properties;
 
-    private final Jaxb2Marshaller marshaller;
+    private final Marshaller marshaller;
     private final RestTemplate template;
 
-    public CrowdClient(CrowdProperties crowdProperties) {
-        this.crowdProperties = crowdProperties;
-
-        marshaller = new Jaxb2Marshaller();
-        marshaller.setPackagesToScan(AuthenticationContext.class.getPackage().getName());
-
-        template = new RestTemplate();
+    public CrowdClient(CrowdProperties properties) {
+        this.properties = properties;
+        this.marshaller = new Marshaller();
+        this.template = new RestTemplate();
     }
 
     public String authenticate(String username, String password) throws AuthenticationException {
@@ -48,7 +40,7 @@ public class CrowdClient {
         context.setPassword(password);
 
         try {
-            String body = marshall(context);
+            String body = marshaller.marshall(context);
             Session session = (Session) send("/session?validate-password=true", HttpMethod.POST, body);
             log.info("CROWD password validated");
 
@@ -57,12 +49,6 @@ public class CrowdClient {
             log.error("Could not authenticate via CROWD", rce);
             throw new AuthenticationServiceException("Could not authenticate", rce);
         }
-    }
-
-    private String marshall(Object value) {
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(value, new StreamResult(writer));
-        return writer.toString();
     }
 
     public User getUser(String username) {
@@ -91,17 +77,17 @@ public class CrowdClient {
     }
 
     private Object send(String path, HttpMethod method, String body) {
-        String url = crowdProperties.getUrl(path);
+        String url = properties.getUrl(path);
         HttpEntity<String> entity = build(body);
         ResponseEntity<String> response = template.exchange(url, method, entity, String.class);
-        return marshaller.unmarshal(new StreamSource(new StringReader(response.getBody())));
+        return marshaller.unmarshal(response.getBody());
     }
 
     private HttpEntity<String> build(String body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
-        crowdProperties.setAuthentication(headers);
+        properties.setAuthentication(headers);
 
         return new HttpEntity<>(body, headers);
     }
